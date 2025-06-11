@@ -1,0 +1,23 @@
+[project]
+name = "ergomotion_lab"
+version = "0.1.0"
+description = "ErgoMotion Lab Android app"
+requires-python = ">=3.10"
+dependencies = [
+    "flet==0.27.6",
+    "numpy==1.26.4",
+    "tensorflow==2.19.0",
+    "fastapi==0.110.0",
+    "reportlab==4.0.7",
+    "openpyxl==3.1.2",
+]
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F"]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+
+[tool.permissions]
+android = ["CAMERA", "BODY_SENSORS"]
