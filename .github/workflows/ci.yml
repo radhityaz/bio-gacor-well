@@ -4,31 +4,43 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      # Python 3.12 + deps
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
-      - name: Set Flutter mirrors
-        run: |
-          echo "PUB_HOSTED_URL=https://pub.flutter-io.cn" >> $GITHUB_ENV
-          echo "FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn" >> $GITHUB_ENV
+        with: { python-version: "3.12" }
+      - run: pip install --upgrade -r requirements.txt
+
+      # Install Flutter 3.27.4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'
-          channel: 'stable'
-      - name: Seed Flutter into Flet cache
+          flutter-version: "3.27.4"
+          channel: "stable"
+
+      # Seed into Flet cache so CLI tidak download lagi
+      - name: Seed Flutter for Flet
         run: |
+          FLUTTER_TAG="3.27.4-stable"
           mkdir -p ~/.flet
           rm -rf ~/.flet/flutter
-          ln -s "$HOME/flutter" ~/.flet/flutter
-          echo "3.22.1-stable" > ~/.flet/flutter/version
+          mkdir -p ~/.flet/flutter
+          ln -s "$HOME/flutter" ~/.flet/flutter/"$FLUTTER_TAG"
+          echo "$FLUTTER_TAG" > ~/.flet/flutter/version
+
+      # Mirror env (jaga-jaga pub/grpc)
+      - run: |
+          echo "PUB_HOSTED_URL=https://pub.flutter-io.cn" >> $GITHUB_ENV
+          echo "FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn" >> $GITHUB_ENV
+
+      # Lint & unit-test
       - run: ruff check .
       - run: pytest -q
-      - run: ./scripts/build_apk.sh
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+
+      # Build APK (debug)
+      - run: flet build apk android -v
+
+      # Upload artefak
+      - uses: actions/upload-artifact@v4
         with:
           name: ErgoMotion-debug-apk
           path: build/**/outputs/apk/debug/*.apk
