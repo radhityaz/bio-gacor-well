@@ -17,6 +17,11 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
+      - name: Provide Flutter to Flet
+        run: |
+          mkdir -p ~/.flet
+          rm -rf ~/.flet/flutter
+          ln -s "$HOME/flutter" ~/.flet/flutter
       - run: ruff check .
       - run: pytest -q
       - run: ./scripts/build_apk.sh
