@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Python deps
-        run: pip install flet==0.23.*
+        run: pip install flet
       - name: Build APK
         run: flet build apk --release
       - name: Upload APK
