@@ -16,7 +16,7 @@ jobs:
           echo "FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn" >> $GITHUB_ENV
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.1'
+          flutter-version: '3.19.0'
       - run: ruff check .
       - run: pytest -q
       - run: ./scripts/build_apk.sh
