@@ -17,7 +17,8 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.1'
-      - name: Provide Flutter to Flet
+          channel: 'stable'
+      - name: Seed Flutter into Flet cache
         run: |
           mkdir -p ~/.flet
           rm -rf ~/.flet/flutter
@@ -26,3 +27,8 @@ jobs:
       - run: ruff check .
       - run: pytest -q
       - run: ./scripts/build_apk.sh
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ErgoMotion-debug-apk
+          path: build/**/outputs/apk/debug/*.apk
