@@ -12,9 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Python deps
-        run: pip install flet
-             apt-get update
+        run: apt-get update
              apt-get install -y python3-pip
+             pip install flet
+             
       - name: Build APK
         run: flet build apk --release
       - name: Upload APK
