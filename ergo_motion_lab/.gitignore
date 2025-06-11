@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Flet build
+build/
+dist/
+*.apk
+
+# IDE
+.vscode/
+.idea/
