@@ -32,8 +32,8 @@ jobs:
             platforms;android-34
             cmdline-tools;latest
 
-      # Expose FLUTTER_ROOT + add bin to PATH and seed cache
-      - name: Export Flutter env & seed Flet cache
+      # Expose FLUTTER_ROOT and seed Flet cache
+      - name: Export Flutter & seed cache
         run: |
           echo "FLUTTER_ROOT=${{ steps.flutter.outputs.CACHE-PATH }}" >> $GITHUB_ENV
           echo "${{ steps.flutter.outputs.CACHE-PATH }}/bin" >> $GITHUB_PATH
