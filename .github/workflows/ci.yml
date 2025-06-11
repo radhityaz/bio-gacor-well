@@ -9,4 +9,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install flet
+      - name: Configure Flutter mirrors
+        run: |
+          echo "PUB_HOSTED_URL=https://pub.flutter-io.cn" >> $GITHUB_ENV
+          echo "FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn" >> $GITHUB_ENV
       - run: ./scripts/build_apk.sh
