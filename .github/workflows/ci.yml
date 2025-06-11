@@ -22,6 +22,7 @@ jobs:
           mkdir -p ~/.flet
           rm -rf ~/.flet/flutter
           ln -s "$HOME/flutter" ~/.flet/flutter
+          echo "3.22.1-stable" > ~/.flet/flutter/version
       - run: ruff check .
       - run: pytest -q
       - run: ./scripts/build_apk.sh
