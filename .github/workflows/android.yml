@@ -12,7 +12,8 @@ jobs:
       - run: pip install --upgrade -r requirements.txt packaging
 
       # Install Flutter 3.27.4
-      - uses: subosito/flutter-action@v2
+      - id: flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.27.4"
           channel: stable
@@ -25,14 +26,15 @@ jobs:
             platforms;android-34
             cmdline-tools;latest
 
-      # Seed SDK for Flet & PATH
-      - name: Seed SDK for Flet & PATH
+      # Export FLUTTER_ROOT & seed for Flet
+      - name: Prepare Flutter for Flet
         run: |
+          echo "FLUTTER_ROOT=${{ steps.flutter.outputs.CACHE-PATH }}" >> $GITHUB_ENV
+          echo "PATH=${{ steps.flutter.outputs.CACHE-PATH }}/bin:$PATH" >> $GITHUB_ENV
+
           mkdir -p ~/.flet/flutter
-          ln -s "$HOME/flutter" ~/.flet/flutter/3.27.4-stable || true
-          echo '3.27.4-stable' > ~/.flet/flutter/version
-          echo "FLUTTER_ROOT=$HOME/flutter"  >> $GITHUB_ENV
-          echo "PATH=$HOME/flutter/bin:$PATH" >> $GITHUB_ENV
+          ln -sfn "${{ steps.flutter.outputs.CACHE-PATH }}" ~/.flet/flutter/3.27.4-stable
+          echo "3.27.4-stable" > ~/.flet/flutter/version
 
       # Mirror env (jaga-jaga pub/grpc)
       - run: |

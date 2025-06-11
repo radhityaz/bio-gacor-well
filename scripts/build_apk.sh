@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-# 1) Pastikan Flutter binari versi 3.27.4 ada & PATH-nya benar
-export FLUTTER_ROOT="$HOME/flutter"
+# 1) Pastikan Flutter 3.27.4 ada & PATH-nya benar
+export FLUTTER_ROOT="${FLUTTER_ROOT:-$HOME/flutter}"
 export PATH="$FLUTTER_ROOT/bin:$PATH"
 
-# 2) Hindari doctor (akses jaringan)
-FLET_FLAGS=(build apk android --skip-flutter-doctor -v)
-
-# 3) Monkey-patch kedua modul Flet yang mem-download SDK
+# 2) Monkey-patch modul installer Flet agar tidak mengunduh SDK
 python - <<'PY'
 import os, sys, importlib
 from packaging import version
@@ -34,9 +31,7 @@ cmd_build.MINIMAL_FLUTTER_VERSION = version.Version("3.27.4")
 
 # -- invoke Flet
 import flet_cli.cli
-sys.argv = ["flet"] + os.environ.get("FLET_ARGS", "").split()
-if not sys.argv[1:]:
-    sys.argv += ["build", "apk", "android", "--skip-flutter-doctor", "-v"]
+sys.argv = ["flet", "build", "apk", "android", "--skip-flutter-doctor", "-v"]
 flet_cli.cli.main()
 PY
 
