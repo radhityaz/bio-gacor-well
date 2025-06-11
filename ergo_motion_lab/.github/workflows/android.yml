@@ -2,7 +2,7 @@ name: Android Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ codex/generate-android-flet-app-for-ergomotion-lab ]
   workflow_dispatch:
 
 jobs:
