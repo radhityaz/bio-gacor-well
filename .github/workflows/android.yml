@@ -1,0 +1,33 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ work ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Python dependencies
+        run: pip install flet ruff pytest
+      - name: Ruff
+        run: ruff .
+      - name: Pytest
+        run: pytest
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Build APK (offline patch)
+        run: bash scripts/build_apk.sh
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/*.apk
