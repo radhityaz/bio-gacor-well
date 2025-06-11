@@ -9,4 +9,4 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install flet
-      - run: scripts/build_apk.sh
+      - run: ./scripts/build_apk.sh
