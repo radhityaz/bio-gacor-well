@@ -10,24 +10,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install Python dependencies
-        run: pip install flet ruff pytest
-      - name: Ruff
-        run: ruff .
-      - name: Pytest
-        run: pytest
-      - uses: subosito/flutter-action@v2
+        with: { python-version: '3.12' }
+      - run: pip install --upgrade -r requirements.txt packaging
+
+      # ---------- Flutter 3.27.4 ----------
+      - id: flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.27.4'
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-      - name: Build APK (offline patch)
-        run: bash scripts/build_apk.sh
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+          channel: stable
+
+      # ---------- Android SDK ----------
+      - uses: android-actions/setup-android@v3
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/*.apk
+          components: |
+            platform-tools
+            build-tools;34.0.0
+            platforms;android-34
+            cmdline-tools;latest
+
+      # ---------- Expose Flutter & seed cache for Flet ----------
+      - name: Export Flutter & seed cache
+        run: |
+          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
+          echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH       # add to PATH
+
+          mkdir -p ~/.flet/flutter
+          ln -sfn "$FLUTTER_HOME" ~/.flet/flutter/3.27.4-stable
+          echo '3.27.4-stable' > ~/.flet/flutter/version
+
+      # ---------- Lint & test ----------
+      - run: ruff check .
+      - run: pytest -q
+
+      # ---------- Build APK offline ----------
+      - run: bash scripts/build_apk.sh
+
+      # ---------- Upload artifact ----------
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ErgoMotion-debug-apk
+          path: build/**/outputs/apk/debug/*.apk
