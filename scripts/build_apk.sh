@@ -2,11 +2,16 @@
 set -e
 
 python - <<'PY'
-import os, sys, importlib
+import shutil, os, sys, importlib
+from pathlib import Path
 from packaging.version import Version
 
 sdk = os.getenv("FLUTTER_ROOT") or os.getenv("FLUTTER_HOME")
-assert sdk, "FLUTTER_ROOT/FLUTTER_HOME envar missing"
+if not sdk:
+    bin_flutter = shutil.which("flutter")
+    if not bin_flutter:
+        sys.exit("\u274c  Flutter binary not found.")
+    sdk = str(Path(bin_flutter).resolve().parents[1])
 
 # patch utils.flutter & commands.build so Flet never downloads SDK
 for module_name in ("flet_cli.utils.flutter", "flet_cli.commands.build"):
