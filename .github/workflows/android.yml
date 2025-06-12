@@ -30,8 +30,10 @@ jobs:
             platform-tools
             build-tools;34.0.0
             platforms;android-34
-            cmdline-tools;8.0
-          accept-android-sdk-licenses:  true      # ⬅️ boolean, TANPA quote
+            cmdline-tools;latest
+          accept-android-sdk-licenses: true
+
+      - run: sdkmanager --list | head -20
           log-accepted-android-sdk-licenses: true
 
     
