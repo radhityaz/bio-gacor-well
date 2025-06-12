@@ -15,7 +15,7 @@ jobs:
         with: { python-version: '3.12' }
       - run: pip install --upgrade -r requirements.txt packaging
 
-      # ---------------- Flutter 3.27.4 ----------------
+      # ---------- Flutter SDK ----------
       - id: flutter
         uses: subosito/flutter-action@v2
         with:
@@ -32,7 +32,7 @@ jobs:
             platforms;android-34
             cmdline-tools;latest
 
-      # ---------- Export FLUTTER_ROOT, update PATH, seed Flet cache ----------
+      # ---------- Export env & seed Flet cache ----------
       - name: Prepare Flutter for Flet
         run: |
           echo "FLUTTER_ROOT=${{ steps.flutter.outputs.FLUTTER_HOME }}" >> $GITHUB_ENV
@@ -45,9 +45,8 @@ jobs:
       - run: ruff check .
       - run: pytest -q
 
-      # Build APK offline
-      - name: Build APK (offline patch)
-        run: bash scripts/build_apk.sh
+      # ---------- Build APK (offline) ----------
+      - run: bash scripts/build_apk.sh
 
       # ---------- Upload artifact ----------
       - uses: actions/upload-artifact@v4
