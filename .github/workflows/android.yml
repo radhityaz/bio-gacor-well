@@ -36,10 +36,10 @@ jobs:
       # ---------- Export env & seed Flet cache ----------
       - name: Prepare Flutter for Flet
         run: |
-          echo "FLUTTER_ROOT=${{ steps.flutter.outputs.FLUTTER_HOME }}" >> $GITHUB_ENV
-          echo "${{ steps.flutter.outputs.FLUTTER_HOME }}/bin" >> $GITHUB_PATH
+          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
+          echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
           mkdir -p ~/.flet/flutter
-          ln -sfn "${{ steps.flutter.outputs.FLUTTER_HOME }}" ~/.flet/flutter/3.27.4-stable
+          ln -sfn "$FLUTTER_HOME" ~/.flet/flutter/3.27.4-stable
           echo '3.27.4-stable' > ~/.flet/flutter/version
 
       # ---------- Lint & test ----------
