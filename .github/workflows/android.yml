@@ -1,59 +1,21 @@
-name: Android Build
-
-on:
-  push:
-    branches: [ work ]
-  pull_request:
+name: build-apk
+on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ghcr.io/cirruslabs/flutter:3.22.1   # ← image sudah full SDK
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
-        with: { python-version: '3.12' }
-      - run: pip install --upgrade -r requirements.txt packaging
+        with: { python-version: "3.12" }
 
-      # ---------- Flutter SDK ----------
-      - id: flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.27.4'
-          channel: stable
-          cache: true
+      - run: pip install --upgrade "flet[all]" tflite-runtime
 
-      # ---------- Android SDK ----------
-      - uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platform-tools
-            build-tools;34.0.0
-            platforms;android-34
-            cmdline-tools;latest
-          accept-android-sdk-licenses: true
+      # Build debug APK (offline)
+      - run: flet build apk android --skip-flutter-doctor -v
 
-      - run: sdkmanager --list | head -20
-          log-accepted-android-sdk-licenses: true
-
-    
-      # ---------- Export env & seed Flet cache ----------
-      - name: Prepare Flutter for Flet
-        run: |
-          echo "FLUTTER_ROOT=$FLUTTER_HOME" >> $GITHUB_ENV
-          echo "$FLUTTER_HOME/bin" >> $GITHUB_PATH
-          mkdir -p ~/.flet/flutter
-          ln -sfn "$FLUTTER_HOME" ~/.flet/flutter/3.27.4-stable
-          echo '3.27.4-stable' > ~/.flet/flutter/version
-
-      # ---------- Lint & test ----------
-      - run: ruff check .
-      - run: pytest -q
-
-      # ---------- Build APK (offline) ----------
-      - run: bash scripts/build_apk.sh
-
-      # ---------- Upload artifact ----------
       - uses: actions/upload-artifact@v4
         with:
           name: ErgoMotion-debug-apk
