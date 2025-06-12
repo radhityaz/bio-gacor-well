@@ -35,6 +35,8 @@ jobs:
       # ---------- Export FLUTTER_ROOT, update PATH, seed Flet cache ----------
       - name: Prepare Flutter for Flet
         run: |
+          export FLUTTER_ROOT="${{ steps.flutter.outputs.CACHE-PATH }}"
+          export PATH="${{ steps.flutter.outputs.CACHE-PATH }}/bin:$PATH"
           echo "FLUTTER_ROOT=${{ steps.flutter.outputs.CACHE-PATH }}" >> $GITHUB_ENV
           echo "${{ steps.flutter.outputs.CACHE-PATH }}/bin" >> $GITHUB_PATH
           mkdir -p ~/.flet/flutter
