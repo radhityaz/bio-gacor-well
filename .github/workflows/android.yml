@@ -30,8 +30,8 @@ jobs:
             platform-tools
             build-tools;34.0.0
             platforms;android-34
-            cmdline-tools;latest
-          accept-android-sdk-licenses: true
+            cmdline-tools;8.0
+          accept-android-sdk-licenses: "yes"
 
       # ---------- Export env & seed Flet cache ----------
       - name: Prepare Flutter for Flet
