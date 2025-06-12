@@ -31,8 +31,10 @@ jobs:
             build-tools;34.0.0
             platforms;android-34
             cmdline-tools;8.0
-          accept-android-sdk-licenses: "yes"
+          accept-android-sdk-licenses:  true      # ⬅️ boolean, TANPA quote
+          log-accepted-android-sdk-licenses: true
 
+    
       # ---------- Export env & seed Flet cache ----------
       - name: Prepare Flutter for Flet
         run: |
