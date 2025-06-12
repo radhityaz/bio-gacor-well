@@ -1,0 +1,22 @@
+name: build-apk
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cirruslabs/flutter:3.22.1   # ← image sudah full SDK
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - run: pip install --upgrade "flet[all]" tflite-runtime
+
+      # Build debug APK (offline)
+      - run: flet build apk android --skip-flutter-doctor -v
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ErgoMotion-debug-apk
+          path: build/**/outputs/apk/debug/*.apk
