@@ -5,8 +5,8 @@ python - <<'PY'
 import os, sys, importlib
 from packaging.version import Version
 
-sdk = os.environ["FLUTTER_ROOT"]  # set by workflow
-assert sdk, "FLUTTER_ROOT envar missing"
+sdk = os.getenv("FLUTTER_ROOT") or os.getenv("FLUTTER_HOME")
+assert sdk, "FLUTTER_ROOT/FLUTTER_HOME envar missing"
 
 # patch utils.flutter & commands.build so Flet never downloads SDK
 for module_name in ("flet_cli.utils.flutter", "flet_cli.commands.build"):
